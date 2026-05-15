@@ -179,6 +179,7 @@ def new_game(request):
         'draw_reason': game.draw_reason,
     })
 
+
 @require_POST
 def resume_game(request):
     """Resume the existing session game without resetting it."""
@@ -214,6 +215,7 @@ def resume_game(request):
         'pgn': game.generate_pgn(),
         'difficulty': request.session.get('difficulty', 'medium'),
     })
+
 
 @require_GET
 def check_promotion(request):
@@ -329,8 +331,7 @@ def ai_move(request):
     depth = depth_map.get(difficulty, 3)
 
     best = game.get_ai_move(depth=depth)
-    best = game.get_ai_move(depth=depth)
-    
+
     if not best:
         if game.game_status == 'checkmate':
             winner = 'black' if game.current_turn == 'white' else 'white'
