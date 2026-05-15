@@ -48,10 +48,15 @@ def load_castling_rights(rights_str):
     global W_K_CASTLE, W_Q_CASTLE, B_K_CASTLE, B_Q_CASTLE
     W_K_CASTLE = W_Q_CASTLE = B_K_CASTLE = B_Q_CASTLE = False
     for char in rights_str:
-        if char == 'K': W_K_CASTLE = True
-        elif char == 'Q': W_Q_CASTLE = True
-        elif char == 'k': B_K_CASTLE = True
-        elif char == 'q': B_Q_CASTLE = True
+        if char == 'K':
+            W_K_CASTLE = True
+        elif char == 'Q':
+            W_Q_CASTLE = True
+        elif char == 'k':
+            B_K_CASTLE = True
+        elif char == 'q':
+            B_Q_CASTLE = True
+
 
 def load_en_passant(row, col):
     global EN_PASSANT_R, EN_PASSANT_C
@@ -203,23 +208,30 @@ def valid_queen(fr, fc, tr, tc):
 def valid_king(color, fr, fc, tr, tc):
     if abs(tr - fr) <= 1 and abs(tc - fc) <= 1:
         return True
-        
+
     if fr == tr and abs(tc - fc) == 2:
         if color == 'white' and fr == 7 and fc == 4:
             if tc == 6 and W_K_CASTLE and is_empty(BOARD[7][5]) and is_empty(BOARD[7][6]):
-                if not is_square_attacked(7, 4, 'black') and not is_square_attacked(7, 5, 'black') and not is_square_attacked(7, 6, 'black'):
+                if (not is_square_attacked(7, 4, 'black') and
+                        not is_square_attacked(7, 5, 'black') and
+                        not is_square_attacked(7, 6, 'black')):
                     return True
             if tc == 2 and W_Q_CASTLE and is_empty(BOARD[7][3]) and is_empty(BOARD[7][2]) and is_empty(BOARD[7][1]):
-                if not is_square_attacked(7, 4, 'black') and not is_square_attacked(7, 3, 'black') and not is_square_attacked(7, 2, 'black'):
+                if (not is_square_attacked(7, 4, 'black') and
+                        not is_square_attacked(7, 3, 'black') and
+                        not is_square_attacked(7, 2, 'black')):
                     return True
         elif color == 'black' and fr == 0 and fc == 4:
             if tc == 6 and B_K_CASTLE and is_empty(BOARD[0][5]) and is_empty(BOARD[0][6]):
-                if not is_square_attacked(0, 4, 'white') and not is_square_attacked(0, 5, 'white') and not is_square_attacked(0, 6, 'white'):
+                if (not is_square_attacked(0, 4, 'white') and
+                        not is_square_attacked(0, 5, 'white') and
+                        not is_square_attacked(0, 6, 'white')):
                     return True
             if tc == 2 and B_Q_CASTLE and is_empty(BOARD[0][3]) and is_empty(BOARD[0][2]) and is_empty(BOARD[0][1]):
-                if not is_square_attacked(0, 4, 'white') and not is_square_attacked(0, 3, 'white') and not is_square_attacked(0, 2, 'white'):
+                if (not is_square_attacked(0, 4, 'white') and
+                        not is_square_attacked(0, 3, 'white') and
+                        not is_square_attacked(0, 2, 'white')):
                     return True
-                    
     return False
 
 
@@ -472,7 +484,8 @@ def generate_moves(side):
                                 fc=col,
                                 tr=tr,
                                 tc=tc,
-                                promo_piece=('Q' if is_white(piece) else 'q') if is_promotion_move(piece, tr) else NO_PROMOTION,
+                                promo_piece=('Q' if is_white(piece) else 'q') if is_promotion_move(piece, tr)
+                                else NO_PROMOTION,
                             )
                         )
     return moves
@@ -528,20 +541,30 @@ def minimax(depth, alpha, beta, maximizing):
             old_wk, old_wq = W_K_CASTLE, W_Q_CASTLE
             old_bk, old_bq = B_K_CASTLE, B_Q_CASTLE
 
-            if src_piece == 'K': W_K_CASTLE = W_Q_CASTLE = False
-            if src_piece == 'k': B_K_CASTLE = B_Q_CASTLE = False
+            if src_piece == 'K':
+                W_K_CASTLE = W_Q_CASTLE = False
+            if src_piece == 'k':
+                B_K_CASTLE = B_Q_CASTLE = False
             if src_piece == 'R':
-                if move.fr == 7 and move.fc == 0: W_Q_CASTLE = False
-                if move.fr == 7 and move.fc == 7: W_K_CASTLE = False
+                if move.fr == 7 and move.fc == 0:
+                    W_Q_CASTLE = False
+                if move.fr == 7 and move.fc == 7:
+                    W_K_CASTLE = False
             if src_piece == 'r':
-                if move.fr == 0 and move.fc == 0: B_Q_CASTLE = False
-                if move.fr == 0 and move.fc == 7: B_K_CASTLE = False
+                if move.fr == 0 and move.fc == 0:
+                    B_Q_CASTLE = False
+                if move.fr == 0 and move.fc == 7:
+                    B_K_CASTLE = False
             if dst_piece == 'R':
-                if move.tr == 7 and move.tc == 0: W_Q_CASTLE = False
-                if move.tr == 7 and move.tc == 7: W_K_CASTLE = False
+                if move.tr == 7 and move.tc == 0:
+                    W_Q_CASTLE = False
+                if move.tr == 7 and move.tc == 7:
+                    W_K_CASTLE = False
             if dst_piece == 'r':
-                if move.tr == 0 and move.tc == 0: B_Q_CASTLE = False
-                if move.tr == 0 and move.tc == 7: B_K_CASTLE = False
+                if move.tr == 0 and move.tc == 0:
+                    B_Q_CASTLE = False
+                if move.tr == 0 and move.tc == 7:
+                    B_K_CASTLE = False
 
             value = minimax(depth - 1, alpha, beta, False)
 
@@ -580,20 +603,30 @@ def minimax(depth, alpha, beta, maximizing):
         old_wk, old_wq = W_K_CASTLE, W_Q_CASTLE
         old_bk, old_bq = B_K_CASTLE, B_Q_CASTLE
 
-        if src_piece == 'K': W_K_CASTLE = W_Q_CASTLE = False
-        if src_piece == 'k': B_K_CASTLE = B_Q_CASTLE = False
+        if src_piece == 'K':
+            W_K_CASTLE = W_Q_CASTLE = False
+        if src_piece == 'k':
+            B_K_CASTLE = B_Q_CASTLE = False
         if src_piece == 'R':
-            if move.fr == 7 and move.fc == 0: W_Q_CASTLE = False
-            if move.fr == 7 and move.fc == 7: W_K_CASTLE = False
+            if move.fr == 7 and move.fc == 0:
+                W_Q_CASTLE = False
+            if move.fr == 7 and move.fc == 7:
+                W_K_CASTLE = False
         if src_piece == 'r':
-            if move.fr == 0 and move.fc == 0: B_Q_CASTLE = False
-            if move.fr == 0 and move.fc == 7: B_K_CASTLE = False
+            if move.fr == 0 and move.fc == 0:
+                B_Q_CASTLE = False
+            if move.fr == 0 and move.fc == 7:
+                B_K_CASTLE = False
         if dst_piece == 'R':
-            if move.tr == 7 and move.tc == 0: W_Q_CASTLE = False
-            if move.tr == 7 and move.tc == 7: W_K_CASTLE = False
+            if move.tr == 7 and move.tc == 0:
+                W_Q_CASTLE = False
+            if move.tr == 7 and move.tc == 7:
+                W_K_CASTLE = False
         if dst_piece == 'r':
-            if move.tr == 0 and move.tc == 0: B_Q_CASTLE = False
-            if move.tr == 0 and move.tc == 7: B_K_CASTLE = False
+            if move.tr == 0 and move.tc == 0:
+                B_Q_CASTLE = False
+            if move.tr == 0 and move.tc == 7:
+                B_K_CASTLE = False
 
         value = minimax(depth - 1, alpha, beta, True)
 
@@ -664,20 +697,30 @@ def handle_bestmove(turn, depth):
         old_wk, old_wq = W_K_CASTLE, W_Q_CASTLE
         old_bk, old_bq = B_K_CASTLE, B_Q_CASTLE
 
-        if src_piece == 'K': W_K_CASTLE = W_Q_CASTLE = False
-        if src_piece == 'k': B_K_CASTLE = B_Q_CASTLE = False
+        if src_piece == 'K':
+            W_K_CASTLE = W_Q_CASTLE = False
+        if src_piece == 'k':
+            B_K_CASTLE = B_Q_CASTLE = False
         if src_piece == 'R':
-            if move.fr == 7 and move.fc == 0: W_Q_CASTLE = False
-            if move.fr == 7 and move.fc == 7: W_K_CASTLE = False
+            if move.fr == 7 and move.fc == 0:
+                W_Q_CASTLE = False
+            if move.fr == 7 and move.fc == 7:
+                W_K_CASTLE = False
         if src_piece == 'r':
-            if move.fr == 0 and move.fc == 0: B_Q_CASTLE = False
-            if move.fr == 0 and move.fc == 7: B_K_CASTLE = False
+            if move.fr == 0 and move.fc == 0:
+                B_Q_CASTLE = False
+            if move.fr == 0 and move.fc == 7:
+                B_K_CASTLE = False
         if dst_piece == 'R':
-            if move.tr == 7 and move.tc == 0: W_Q_CASTLE = False
-            if move.tr == 7 and move.tc == 7: W_K_CASTLE = False
+            if move.tr == 7 and move.tc == 0:
+                W_Q_CASTLE = False
+            if move.tr == 7 and move.tc == 7:
+                W_K_CASTLE = False
         if dst_piece == 'r':
-            if move.tr == 0 and move.tc == 0: B_Q_CASTLE = False
-            if move.tr == 0 and move.tc == 7: B_K_CASTLE = False
+            if move.tr == 0 and move.tc == 0:
+                B_Q_CASTLE = False
+            if move.tr == 0 and move.tc == 7:
+                B_K_CASTLE = False
 
         value = minimax(depth - 1, -(10 ** 9), 10 ** 9, not maximizing)
 

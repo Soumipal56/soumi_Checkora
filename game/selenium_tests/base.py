@@ -1,11 +1,14 @@
 """Base class for Checkora Selenium E2E tests."""
 
+import unittest
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 
 # ── ANSI colours for readable terminal output ──────────────────────
 GREEN = "\033[92m"
@@ -17,19 +20,19 @@ BOLD = "\033[1m"
 
 
 def log_ok(msg):
-    print(f"  {GREEN}✅ {msg}{RESET}")
+    print(f"  {GREEN}[OK] {msg}{RESET}")
 
 
 def log_fail(msg):
-    print(f"  {RED}❌ {msg}{RESET}")
+    print(f"  {RED}[FAIL] {msg}{RESET}")
 
 
 def log_info(msg):
-    print(f"  {CYAN}ℹ  {msg}{RESET}")
+    print(f"  {CYAN}[INFO] {msg}{RESET}")
 
 
 def log_warn(msg):
-    print(f"  {YELLOW}⚠  {msg}{RESET}")
+    print(f"  {YELLOW}[WARN] {msg}{RESET}")
 
 
 class BaseE2ETest(StaticLiveServerTestCase):
@@ -47,13 +50,14 @@ class BaseE2ETest(StaticLiveServerTestCase):
         chrome_options.add_argument("--window-size=1920,1080")
 
         try:
-            cls.driver = webdriver.Chrome(options=chrome_options)
+            cls.driver = webdriver.Chrome(
+                service=Service(ChromeDriverManager().install()),
+                options=chrome_options
+            )
             log_ok("Chrome WebDriver initialized")
         except Exception as e:
-            log_fail(f"Failed to initialize Chrome WebDriver: {e}")
-            raise RuntimeError(
-                f"Failed to initialize Chrome WebDriver: {e}"
-            ) from e
+            log_warn(f"Skipping Selenium tests: Chrome WebDriver not found ({e})")
+            raise unittest.SkipTest("Chrome WebDriver not available")
 
         cls.wait = WebDriverWait(cls.driver, 15)
 
